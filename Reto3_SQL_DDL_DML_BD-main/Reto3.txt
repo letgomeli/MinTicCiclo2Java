@@ -1,0 +1,109 @@
+//Ejercicios  Dbeaver
+//Reto3
+select * from Tipo;
+select * from Proyecto;
+select * from Lider;
+select * from MaterialConstruccion;
+
+--query 1
+/*1.	Necesitan conocer en qué proyectos se debe dinero por la compra 
+ de materiales, ordenando por el id del proyecto.
+ */
+
+select distinct (ID_Proyecto) 
+from Compra c
+where Pagado = 'No'
+order by ID_Proyecto;
+
+--query 2 
+/*2.	Necesitan conocer qué proyectos utilizan materiales de construcción
+ importados.
+ */
+
+select distinct ID_Proyecto
+from Compra c
+inner join MaterialConstruccion mc 
+on c.ID_materialConstruccion = mc.ID_MaterialConstruccion
+where mc.Importado = "Si"
+order by c.ID_Proyecto;
+/*
+ * Este es para subir a imaster
+ */
+
+select distinct p.ID_proyecto
+from proyecto p,
+compra c,
+materialConstruccion mc 
+where mc.importado = 'Si'
+and p.ID_Proyecto = c.ID_Proyecto 
+and c.ID_MaterialConstruccion = mc.ID_MaterialConstruccion 
+order by p.ID_Proyecto;
+/*Este es el que nos oriento Carlos
+ * en clase
+ */
+
+--query 3
+/*3. Se necesita conocer el número de líderes que hay por cada Ciudad 
+y su respectiva Ciudad.
+*/
+
+select count(l.ID_Lider), l.Ciudad_Residencia
+from Lider l 
+group by l.Ciudad_Residencia;
+
+--query 4
+/*4.	Se necesita conocer los materiales que no se le han pagado 
+ al proveedor Homecenter, indicando a que proyecto están asociados.
+ */
+
+select c.ID_Compra, c.Proveedor, c.Pagado, c.ID_MaterialConstruccion, c.ID_Proyecto
+from Compra c
+inner join Proyecto P
+on p.ID_Proyecto = c.ID_Proyecto 
+order by c.ID_Proyecto;
+/*Este es el que yo hice
+ * probando
+ */
+
+select c.ID_Proyecto, c.Proveedor, c.Pagado, mc.ID_MaterialConstruccion, mc.Nombre_Material 
+from Compra c 
+inner join MaterialConstruccion mc on c.ID_MaterialConstruccion = mc.ID_MaterialConstruccion 
+where c.Proveedor = "Homecenter" and c.Pagado = "No"
+order by c.ID_Proyecto;
+/*Este es para subir
+ * a imaster
+ */
+
+--query 5
+/*5.	Se necesita saber el nombre y apellidos del líder 
+del o de los proyecto(s) en los que se debe dinero por la compra de materiales.
+*/
+
+select l.ID_Lider, l.Nombre, l.Primer_Apellido, l.Segundo_Apellido, c.ID_Proyecto
+from Lider l, Compra C
+inner join Proyecto P
+on p.ID_Proyecto = c.ID_Proyecto
+and l.ID_lider = p.Id_proyecto
+where Pagado in ('No, Parcialmente')
+order by c.ID_Proyecto;
+/*
+ * Este es el que hice yo
+ */
+
+select distinct l.ID_Lider, l.Nombre, l.Primer_Apellido, l.Segundo_Apellido 
+from Proyecto P 
+inner join Lider l on p.ID_Lider = l.ID_Lider 
+inner join Compra c on c.ID_Proyecto = p.ID_Proyecto
+where c.Pagado <> "Si"
+order by l.ID_Lider;
+/*
+ * Esta es la solucion pero hay un error en el robot
+ */
+
+select distinct l.ID_Lider, l.Nombre, l.Primer_Apellido, l.Segundo_Apellido 
+from Proyecto P 
+inner join Lider l on p.ID_Lider = l.ID_Lider;
+/*
+ * Esta es la solucion para imaster
+ */
+
